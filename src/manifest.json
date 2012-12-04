@@ -1,0 +1,19 @@
+{
+  "name"			: "Chrome.WB",
+  "version"			: "1.0",
+  "manifest_version": 2,
+  "description"		: "Chrome extension of SINA weibo",
+  "omnibox": { "keyword" : "wb" },
+  "icons": {
+    "16": "icon.png"
+  },
+  "browser_action"	: {
+    	"default_icon"	: "icon.png",
+    	"default_popup"	: "html/popup.html" 
+  },
+  "background"      :{
+        "page": "html/background.html",
+        "persistent": false
+  },
+  "permissions"     : ["tabs", "notifications","http://*/*", "https://*/*"]
+}

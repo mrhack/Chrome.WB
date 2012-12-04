@@ -15,5 +15,5 @@
         "page": "html/background.html",
         "persistent": false
   },
-  "permissions"     : ["tabs", "notifications","http://*/*", "https://*/*"]
+  "permissions"     : ["tabs", "notifications","http://*/*"]
 }

@@ -21,27 +21,81 @@ function createTab( p , fn ){
          } , p , true) , fn);        
  });
 }
-var app = 'Chrome.WB';
+var APP = 'Chrome.WB';
+var UN_OAUTH_ERROE = 2;
 // This event is fired with the user accepts the input in the omnibox.
 chrome.omnibox.onInputEntered.addListener(
   function(text) {
     // ajax to sina weibo
     $.ajax({
-        url     : "http://2.mrhack.sinaapp.com/ajax/do.php"//"http://2.mrhack.sinaapp.com/ajax/send.php"
+        url     : "http://2.mrhack.sinaapp.com/ajax/do.php"
         ,type   : "POST"
         ,data   : {
-            app : app
+            app : APP
             , action : 'send'
             , c : text
         }
         ,dataType   : "json"
         ,success   : function(result){
             // 没有授权，需要从新开一个tab去让用户去授权
-            if(result.error_num == 2){
-              createTab({
-                url : result.error_msg
-              });
-            };
+            switch(result.error_num) {
+              case UN_OAUTH_ERROE:
+                createTab({
+                  url : result.error_msg
+                });
+                break;
+              case 0:
+                break;
+              default:
+                alert(result.error_msg);  
+            }
         }
     });
   });
+
+
+// get new message from weibo
+var interval = setInterval(
+  function getUnreadMessage(){
+     $.ajax({
+          url : "http://2.mrhack.sinaapp.com/ajax/do.php"
+          ,type   : "GET"
+          ,data   : {
+              app : APP
+              , action : 'unread'
+          }
+          ,dataType   : "json"
+          ,success    : function(result){
+            if( result.error_num == UN_OAUTH_ERROE ){
+               clearInterval(interval);
+            }
+            if(!result.error_num){
+               var mention_num = result.cmt 
+                  + result.status
+                  + result.dm
+                  + result.mention_status
+                  + result.mention_cmt;
+                // show this num on browser action
+               mention_num = mention_num || '';
+               chrome.browserAction.setBadgeText({text: mention_num + ''});
+               chrome.browserAction.setBadgeBackgroundColor({color: mention_num ? '#FF0000' : '#FFFFFF'});
+            }
+          }
+     })
+  } , 30000);
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+  // 查看所有的tab，是否有新浪微博的tab
+  // 如果有，则定位到该tab，否则新打开个tab到新浪微博
+  chrome.browserAction.getBadgeText({} ,  function(num){
+    num = parseInt(num || 0);
+    if( num && num > 0 ){
+      createTab({
+        url : 'http://weibo.com'
+      });
+    } else {
+      alert('没有新的消息！');
+    }
+  });
+  
+});

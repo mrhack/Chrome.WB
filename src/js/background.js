@@ -21,15 +21,18 @@ function createTab( p , fn ){
          } , p , true) , fn);        
  });
 }
+var app = 'Chrome.WB';
 // This event is fired with the user accepts the input in the omnibox.
 chrome.omnibox.onInputEntered.addListener(
   function(text) {
     // ajax to sina weibo
     $.ajax({
-        url     : "http://2.mrhack.sinaapp.com/ajax/send.php"//"http://2.mrhack.sinaapp.com/ajax/send.php"
+        url     : "http://2.mrhack.sinaapp.com/ajax/do.php"//"http://2.mrhack.sinaapp.com/ajax/send.php"
         ,type   : "POST"
         ,data   : {
-            c : text
+            app : app
+            , action : 'send'
+            , c : text
         }
         ,dataType   : "json"
         ,success   : function(result){

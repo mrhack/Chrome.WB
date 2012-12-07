@@ -21,14 +21,15 @@ function createTab( p , fn ){
          } , p , true) , fn);        
  });
 }
-var APP = 'Chrome.WB';
-var UN_OAUTH_ERROE = 2;
+var APP             = 'Chrome.WB';
+var UN_OAUTH_ERROE  = 2;
+var AJAX_URL        = "http://2.mrhack.sinaapp.com/ajax/do.php";
 // This event is fired with the user accepts the input in the omnibox.
 chrome.omnibox.onInputEntered.addListener(
   function(text) {
     // ajax to sina weibo
     $.ajax({
-        url     : "http://2.mrhack.sinaapp.com/ajax/do.php"
+        url     : AJAX_URL
         ,type   : "POST"
         ,data   : {
             app : APP
@@ -53,36 +54,36 @@ chrome.omnibox.onInputEntered.addListener(
     });
   });
 
+  // get new message from weibo
+  var timer = null;
+  (function getUnreadMessage(){
+       $.ajax({
+            url : AJAX_URL
+            ,type   : "GET"
+            ,data   : {
+                app : APP
+                , action : 'unread'
+            }
+            ,dataType   : "json"
+            ,success    : function(result){
+              if( result.error_num == UN_OAUTH_ERROE ){
+                 return;
+              }
+              if(!result.error_num){
+                 var mention_num = result.cmt 
+                    + result.dm
+                    + result.mention_status
+                    + result.mention_cmt;
+                  // show this num on browser action
+                 mention_num = mention_num || '';
+                 chrome.browserAction.setBadgeText({text: mention_num + ''});
+                 chrome.browserAction.setBadgeBackgroundColor({color: mention_num ? '#FF0000' : '#FFFFFF'});
+              }
 
-// get new message from weibo
-var interval = setInterval(
-  function getUnreadMessage(){
-     $.ajax({
-          url : "http://2.mrhack.sinaapp.com/ajax/do.php"
-          ,type   : "GET"
-          ,data   : {
-              app : APP
-              , action : 'unread'
-          }
-          ,dataType   : "json"
-          ,success    : function(result){
-            if( result.error_num == UN_OAUTH_ERROE ){
-               clearInterval(interval);
+              timer = setTimeout(getUnreadMessage , 30000);
             }
-            if(!result.error_num){
-               var mention_num = result.cmt 
-                  + result.status
-                  + result.dm
-                  + result.mention_status
-                  + result.mention_cmt;
-                // show this num on browser action
-               mention_num = mention_num || '';
-               chrome.browserAction.setBadgeText({text: mention_num + ''});
-               chrome.browserAction.setBadgeBackgroundColor({color: mention_num ? '#FF0000' : '#FFFFFF'});
-            }
-          }
-     })
-  } , 30000);
+       })
+   })();
 
 chrome.browserAction.onClicked.addListener(function(tab) {
   // 查看所有的tab，是否有新浪微博的tab

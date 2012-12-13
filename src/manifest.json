@@ -8,12 +8,15 @@
     "16": "icon.png"
   },
   "browser_action"	: {
-    	"default_icon"	: "icon.png"
-    	//,"default_popup"	: "html/popup.html" 
+    	"default_icon"	  : "icon.png"
+      ,"default_title"  : "Chrome.WB"
+    	,"default_popup"	: "html/popup.html"
   },
   "background"      :{
-        "page": "html/background.html",
-        "persistent": false
+        "scripts": ["js/lib/jquery-1.7.2.js" , "js/base.js" , "js/background.js"],
+        //"page": "html/background.html",
+        "persistent": true
   },
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions"     : ["tabs", "notifications","http://*/*"]
 }

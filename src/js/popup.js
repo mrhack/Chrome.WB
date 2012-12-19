@@ -26,14 +26,14 @@
             , url   : '/at/weibo'
         }
         ,'mention_cmt' : {
-            text    : '{num}@我的评论'
+            text    : '{num}条@我的评论'
             , url   : '/at/comment'
         }
     }
     var $wrap = $('#container');
     var renderUnread = function(result) {
         var aHtml   = ['<ul>'];
-        var itemTpl = '<li><a href="http://weibo.com/{url}" >{text}</a></li>';
+        var itemTpl = '<li><a href="http://weibo.com/{url}" target="_blank">{text}</a></li>';
         var format  = CWB.util.format;
         var total   = 0;
         for(var key in result){

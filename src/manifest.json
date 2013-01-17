@@ -1,11 +1,13 @@
 {
   "name"			: "Chrome.WB",
-  "version"			: "1.0",
+  "version"			: "1.1",
   "manifest_version": 2,
   "description"		: "Chrome extension of SINA weibo",
   "omnibox": { "keyword" : "wb" },
   "icons": {
-    "16": "icon.png"
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   },
   "browser_action"	: {
     	"default_icon"	  : "icon.png"
@@ -14,9 +16,8 @@
   },
   "background"      :{
         "scripts": ["js/lib/jquery-1.7.2.js" , "js/base.js" , "js/background.js"],
-        //"page": "html/background.html",
         "persistent": true
   },
-  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
   "permissions"     : ["tabs", "notifications","http://*/*"]
 }

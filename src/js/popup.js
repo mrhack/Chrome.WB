@@ -2,6 +2,15 @@
  * js for popup page
  * @date 2012/12/13
  */
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-37756717-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 
 (function(){
     var unread_config = {
@@ -31,6 +40,7 @@
         }
     }
     var $wrap = $('#container');
+    // render result
     var renderUnread = function(result) {
         var aHtml   = ['<ul>'];
         var itemTpl = '<li><a href="http://weibo.com/{url}" target="_blank">{text}</a></li>';
@@ -55,6 +65,10 @@
     }
     CWB.api.request('unread' , function(result){
         renderUnread(result);
+    } , function(result , isOauth){
+        if(!isOauth){
+            $wrap.html('<a href="' + result.error_msg + '" target="_blank">授权已经过期，点我重新授权!</a>');
+        }
     });
 
 })();
